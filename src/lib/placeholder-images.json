@@ -1,3 +1,55 @@
 {
-  "placeholderImages": []
+  "placeholderImages": [
+    {
+      "id": "project-1",
+      "title": "Smart Home Hub",
+      "techStack": [
+        "ESP32",
+        "C++",
+        "PlatformIO",
+        "MQTT"
+      ],
+      "description": "An embedded system for a custom smart home device, enabling centralized control of lighting and climate.",
+      "imageUrl": "https://picsum.photos/seed/101/600/400",
+      "imageHint": "circuit board"
+    },
+    {
+      "id": "project-2",
+      "title": "IoT Data Dashboard",
+      "techStack": [
+        "Next.js",
+        "React",
+        "Recharts",
+        "Vercel"
+      ],
+      "description": "A web dashboard for real-time IoT data visualization, providing insights into sensor networks.",
+      "imageUrl": "https://picsum.photos/seed/102/600/400",
+      "imageHint": "dashboard ui"
+    },
+    {
+      "id": "project-3",
+      "title": "Firmware OTA System",
+      "techStack": [
+        "AWS IoT",
+        "FreeRTOS",
+        "Python"
+      ],
+      "description": "A robust over-the-air firmware update system for a fleet of remote environmental sensors.",
+      "imageUrl": "https://picsum.photos/seed/103/600/400",
+      "imageHint": "cloud network"
+    },
+    {
+      "id": "project-4",
+      "title": "E-commerce Backend",
+      "techStack": [
+        "Node.js",
+        "Express",
+        "PostgreSQL",
+        "Docker"
+      ],
+      "description": "A scalable backend service for an e-commerce platform, handling products, orders, and user authentication.",
+      "imageUrl": "https://picsum.photos/seed/104/600/400",
+      "imageHint": "server code"
+    }
+  ]
 }
