@@ -1,22 +1,61 @@
-import { Cpu, Database, Server, Code, GitBranch, PenTool, Globe, Smartphone, Lock, Bot, Package, Layers } from 'lucide-react';
+
+export const about = `
+I am an Embedded Systems and IoT Developer with a background in full-stack and Shopify development. 
+I started my career in web development and later transitioned into embedded systems after discovering 
+my interest in hardware programming, microcontrollers, and real-world problem solving through electronics. 
+I now work across hardware + firmware + cloud + web, building complete technology solutions.
+
+I have worked with companies like Messold Technologies, GeoCommerce, and Blackvision Technologies, 
+and contributed to multiple real-world projects across ecommerce, automation, and IoT.
+`;
 
 export const skills = {
-  "Embedded Systems": [
-    { name: "Microcontrollers", level: 90, icon: Cpu, description: "ESP8266, Arduino, LPC2148, Raspberry Pi" },
-    { name: "Programming", level: 95, icon: Code, description: "Embedded C, Python, C++" },
-    { name: "Protocols", level: 85, icon: GitBranch, description: "I2C, SPI, UART, GPIO, PWM" },
-    { name: "Firmware Tools", level: 80, icon: PenTool, description: "Keil uVision, Arduino IDE, VS Code" },
-  ],
-  "Software & Web": [
-    { name: "Frontend", level: 90, icon: Code, description: "HTML, CSS, JS, React, Next.js" },
-    { name: "Backend", level: 85, icon: Server, description: "Node.js, Laravel, PHP" },
-    { name: "Databases", level: 80, icon: Database, description: "MySQL, MongoDB" },
-    { name: "CMS/E-commerce", level: 90, icon: Package, description: "Shopify, WordPress, WooCommerce" },
-  ],
-  "IoT & Cloud": [
-    { name: "IoT Platforms", level: 85, icon: Globe, description: "ThingSpeak, MQTT, Firebase" },
-    { name: "Cloud", level: 70, icon: Layers, description: "AWS, Vercel, Netlify, Hostinger" },
-    { name: "Version Control", level: 95, icon: GitBranch, description: "Git & GitHub" },
-    { name: "Circuit Design", level: 75, icon: Cpu, description: "Proteus, Fritzing" },
-  ]
+    "Embedded & Linux": [
+        { name: "C | C++", description: "Proficient in C and C++ for systems programming." },
+        { name: "Linux Internals", description: "Good knowledge of kernel, system calls, and processes." },
+        { name: "Microcontrollers", description: "ESP8266, Arduino (UNO/Nano), Raspberry Pi (3B+/4B+/Pico)" },
+        { name: "ARM Microcontrollers", description: "LPC2148 ARM7 (UART, Timers, Interrupts)" },
+        { name: "Real-Time OS", description: "Experience with RT-Linux concepts." },
+        { name: "Communication Protocols", description: "TCP/IP, I2C, SPI, UART, GPIO, PWM" },
+        { name: "Firmware Tools", description: "Keil uVision, Arduino IDE, VS Code" },
+        { name: "Circuit Design", description: "Proteus, Fritzing" },
+    ],
+    "Software & Web": [
+        { name: "Languages", description: "JavaScript, PHP, Python" },
+        { name: "Backend", description: "Node.js, Laravel" },
+        { name: "Frontend", description: "React, Next.js, HTML, CSS, Bootstrap" },
+        { name: "Databases", description: "MySQL, MongoDB, Firebase" },
+        { name: "Version Control", description: "Git & GitHub" },
+    ],
+    "E-commerce & Cloud": [
+        { name: "Platforms", description: "Shopify Development, Shopify Apps, WooCommerce" },
+        { name: "IoT Platforms", description: "ThingSpeak, MQTT, Firebase" },
+        { name: "Hosting", description: "Hostinger, cPanel, Vercel, Netlify, AWS" }
+    ]
+};
+
+export const projects = {
+    embedded: [
+        { name: "Handheld Gaming Console", description: "Built mini console with button controls and OLED graphics", tech: "Arduino, OLED, C++" },
+        { name: "Smart Ultrasonic Distance Monitor", description: "IoT-based distance tracker with live cloud data", tech: "ESP8266, HC-SR04, ThingSpeak" },
+        { name: "RFID Smart Lock System", description: "Security system using RFID authentication", tech: "RC522, Arduino, Relay" },
+        { name: "Weather Monitoring", description: "Environmental data logger", tech: "Raspberry Pi, Python" },
+        { name: "IoT Automation", description: "Remote appliance control", tech: "ESP8266, Relays" },
+        { name: "LPC2148 ARM Projects", description: "Hardware programming with UART, timers, interrupts", tech: "Embedded C" },
+        { name: "IoT Security Alert System", description: "Motion detection + mobile alert", tech: "PIR Sensor, ESP8266" },
+    ],
+    web: [
+        { name: "Intoobox.com Migration", description: "Migrated a Laravel e-commerce site to Shopify, improving performance by 40%.", tech: "Shopify, Liquid, PHP, Laravel" },
+        { name: "KapdaTailor.com", description: "Tailor fashion ecommerce", tech: "Shopify, Liquid" },
+        { name: "IndySutra.com", description: "Ethnic fashion store", tech: "Shopify, Liquid" },
+        { name: "PowerSutra.com", description: "Women fashion brand", tech: "Shopify, Liquid" },
+        { name: "Many more Shopify & custom sites", description: "Worked with Messold, GeoCommerce, Blackvision", tech: "Shopify, PHP, JS" }
+    ]
+};
+
+export const contact = {
+    email: "kilarimohansai@gmail.com",
+    phone: "+91 8121988257",
+    linkedin: "https://www.linkedin.com/in/mohan-kilari",
+    github: "https://github.com/Mohan-Kilari",
 };
