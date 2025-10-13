@@ -23,10 +23,9 @@ export default function RootLayout({
       </head>
       <body className={cn('font-code antialiased min-h-screen bg-background text-foreground')}>
         <ThemeProvider
-          attribute="class"
+          attribute="data-theme"
           defaultTheme="dark"
-          enableSystem
-          disableTransitionOnChange
+          themes={['dark', 'matrix', 'dracula', 'solarized-dark']}
         >
           {children}
           <Toaster />

@@ -47,6 +47,36 @@
     --input: 210 40% 20%;
     --ring: 209 45% 54%;
   }
+
+  [data-theme='matrix'] {
+    --background: 0 0% 4%;
+    --foreground: 130 100% 80%;
+    --primary: 130 100% 50%;
+    --accent: 130 100% 60%;
+    --border: 130 100% 20%;
+    --input: 130 100% 20%;
+    --ring: 130 100% 60%;
+  }
+
+  [data-theme='dracula'] {
+    --background: 231 15% 18%;
+    --foreground: 60 30% 96%;
+    --primary: 265 89% 78%;
+    --accent: 187 49% 62%;
+    --border: 225 10% 30%;
+    --input: 225 10% 30%;
+    --ring: 187 49% 62%;
+  }
+  
+  [data-theme='solarized-dark'] {
+    --background: 203 16% 15%;
+    --foreground: 195 8% 78%;
+    --primary: 43 100% 64%;
+    --accent: 200 100% 50%;
+    --border: 195 10% 30%;
+    --input: 195 10% 30%;
+    --ring: 200 100% 50%;
+  }
 }
  
 @layer base {
@@ -55,6 +85,7 @@
   }
   body {
     @apply bg-background text-foreground;
+    transition: background-color 0.3s ease, color 0.3s ease;
   }
   html {
     scroll-behavior: smooth;
