@@ -7,8 +7,8 @@ import { AppFooter } from '@/components/footer';
 import { Toaster } from '@/components/ui/toaster';
 
 export const metadata: Metadata = {
-  title: 'Kilari Tech Solutions',
-  description: 'Portfolio of Kilari Tech Solutions',
+  title: 'Mohan Kilari | Embedded Systems & IoT Developer',
+  description: 'Portfolio of Mohan Kilari, an Embedded Systems and IoT Developer with a background in full-stack and Shopify development.',
 };
 
 export default function RootLayout({

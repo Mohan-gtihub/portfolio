@@ -2,54 +2,52 @@
   "placeholderImages": [
     {
       "id": "project-1",
-      "title": "Smart Home Hub",
+      "title": "Handheld Gaming Console",
       "techStack": [
-        "ESP32",
-        "C++",
-        "PlatformIO",
-        "MQTT"
+        "Arduino",
+        "OLED",
+        "C++"
       ],
-      "description": "An embedded system for a custom smart home device, enabling centralized control of lighting and climate.",
+      "description": "Built a mini console with button controls and OLED graphics for a classic gaming experience.",
       "imageUrl": "https://picsum.photos/seed/101/600/400",
-      "imageHint": "circuit board"
+      "imageHint": "game console"
     },
     {
       "id": "project-2",
-      "title": "IoT Data Dashboard",
+      "title": "Smart Ultrasonic Distance Monitor",
       "techStack": [
-        "Next.js",
-        "React",
-        "Recharts",
-        "Vercel"
+        "ESP8266",
+        "HC-SR04",
+        "ThingSpeak"
       ],
-      "description": "A web dashboard for real-time IoT data visualization, providing insights into sensor networks.",
+      "description": "An IoT-based distance tracker that sends live data to the cloud for real-time monitoring.",
       "imageUrl": "https://picsum.photos/seed/102/600/400",
-      "imageHint": "dashboard ui"
+      "imageHint": "iot sensor"
     },
     {
       "id": "project-3",
-      "title": "Firmware OTA System",
+      "title": "RFID Smart Lock System",
       "techStack": [
-        "AWS IoT",
-        "FreeRTOS",
-        "Python"
+        "Arduino",
+        "RC522",
+        "Relay"
       ],
-      "description": "A robust over-the-air firmware update system for a fleet of remote environmental sensors.",
+      "description": "A secure access control system using RFID authentication to manage entry.",
       "imageUrl": "https://picsum.photos/seed/103/600/400",
-      "imageHint": "cloud network"
+      "imageHint": "security lock"
     },
     {
       "id": "project-4",
-      "title": "E-commerce Backend",
+      "title": "Intoobox Shopify Migration",
       "techStack": [
-        "Node.js",
-        "Express",
-        "PostgreSQL",
-        "Docker"
+        "Shopify",
+        "Liquid",
+        "PHP",
+        "Laravel"
       ],
-      "description": "A scalable backend service for an e-commerce platform, handling products, orders, and user authentication.",
+      "description": "Migrated a full-featured e-commerce website from a custom Laravel backend to Shopify, improving performance and scalability.",
       "imageUrl": "https://picsum.photos/seed/104/600/400",
-      "imageHint": "server code"
+      "imageHint": "ecommerce website"
     }
   ]
 }

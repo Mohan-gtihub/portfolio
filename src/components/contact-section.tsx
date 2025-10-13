@@ -3,7 +3,7 @@
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Github, Linkedin, Send } from "lucide-react";
+import { Github, Linkedin, Send, Mail, Phone } from "lucide-react";
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
@@ -97,26 +97,30 @@ export function ContactSection() {
                     </form>
                 </Form>
             </CardContent>
-             <div className="p-6 md:p-8 flex flex-col justify-center items-center text-center">
+             <div className="p-6 md:p-8 flex flex-col justify-center items-start text-left">
                  <CardHeader className="p-0 mb-6">
                     <CardTitle className="text-2xl">Connect with Me</CardTitle>
                     <CardDescription>
-                        Find me on other platforms.
+                        Find me on other platforms or contact me directly.
                     </CardDescription>
                  </CardHeader>
                 <div className="flex flex-col gap-4 w-full max-w-xs">
-                    <Button variant="outline" asChild size="lg">
-                         <a href="https://github.com" target="_blank" rel="noopener noreferrer">
-                            <Github className="mr-2 h-5 w-5" />
-                            GitHub
-                        </a>
-                    </Button>
-                     <Button variant="outline" asChild size="lg">
-                         <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer">
-                            <Linkedin className="mr-2 h-5 w-5" />
-                            LinkedIn
-                        </a>
-                    </Button>
+                    <a href="https://github.com/Mohan-Kilari" target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 text-muted-foreground hover:text-foreground transition-colors">
+                        <Github className="h-5 w-5" />
+                        <span>GitHub</span>
+                    </a>
+                     <a href="https://www.linkedin.com/in/mohan-kilari" target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 text-muted-foreground hover:text-foreground transition-colors">
+                        <Linkedin className="h-5 w-5" />
+                        <span>LinkedIn</span>
+                    </a>
+                    <a href="mailto:kilarimohansai@gmail.com" className="flex items-center gap-3 text-muted-foreground hover:text-foreground transition-colors">
+                        <Mail className="h-5 w-5" />
+                        <span>kilarimohansai@gmail.com</span>
+                    </a>
+                     <div className="flex items-center gap-3 text-muted-foreground">
+                        <Phone className="h-5 w-5" />
+                        <span>+91 8121988257</span>
+                    </div>
                 </div>
              </div>
         </div>

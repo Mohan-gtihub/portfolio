@@ -6,7 +6,6 @@ export function AppHeader() {
   const navItems = [
     { label: "Projects", href: "#projects" },
     { label: "Skills", href: "#skills" },
-    { label: "IoT Demo", href: "#iot-demo" },
     { label: "Contact", href: "#contact" },
   ];
 
@@ -17,7 +16,7 @@ export function AppHeader() {
           <a href="#" className="flex items-center space-x-2">
             <CircuitBoard className="h-6 w-6 text-primary" />
             <span className="font-bold sm:inline-block">
-              Kilari Tech Solutions
+              Mohan Kilari
             </span>
           </a>
         </div>

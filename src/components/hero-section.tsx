@@ -8,12 +8,12 @@ export function HeroSection() {
       <div className="container px-4 md:px-6 text-center z-10">
         <div className="flex flex-col items-center space-y-4">
           <h1 className="text-4xl font-black tracking-tighter sm:text-5xl md:text-6xl lg:text-7xl/none text-transparent bg-clip-text bg-gradient-to-r from-white to-gray-400">
-            Kilari Tech Solutions
+            Mohan Kilari
           </h1>
           <p className="mx-auto max-w-[700px] text-gray-300 md:text-xl">
-            Innovating at the intersection of embedded systems and web technology.
+            Embedded Systems & IoT Developer.
             <br />
-            Crafting the future, from silicon to screen.
+            Building complete technology solutions from hardware to cloud.
           </p>
           <div className="space-x-4">
             <Button asChild size="lg">
