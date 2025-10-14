@@ -1,13 +1,14 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Download, Loader2, ArrowLeft } from 'lucide-react';
+import { Download, Loader2, ArrowLeft, Code } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import Link from 'next/link';
+import { about, skills, projects, contact } from '@/lib/data';
 
-const LatexResume = () => {
+const LatexResumePage = () => {
   const [isLoading, setIsLoading] = useState(false);
+  const [showLatex, setShowLatex] = useState(false);
 
   const latexCode = `\\documentclass[11pt,a4paper]{article}
 
@@ -69,10 +70,10 @@ const LatexResume = () => {
 \\begin{center}
 \\small
 \\begin{tabular}{l c l}
-    \\faPhone\\ +91 8121988257 & \\quad\\quad &
-    \\faEnvelope\\ \\href{mailto:kilarimohansai@gmail.com}{kilarimohansai@gmail.com} \\\\
-    \\faLinkedin\\ \\href{https://www.linkedin.com/in/mohan-kilari-207a131a2/}{linkedin.com/in/mohan-kilari} & \\quad\\quad &
-    \\faGithub\\ \\href{https://github.com/Mohan-gtihub/}{github.com/Mohan-gtihub}
+    \\faPhone\\ ${contact.phone} & \\quad\\quad &
+    \\faEnvelope\\ \\href{mailto:${contact.email}}{${contact.email}} \\\\
+    \\faLinkedin\\ \\href{${contact.linkedin}}{linkedin.com/in/mohan-kilari} & \\quad\\quad &
+    \\faGithub\\ \\href{${contact.github}}{github.com/Mohan-gtihub}
 \\end{tabular}
 \\end{center}
 
@@ -136,7 +137,7 @@ Black Vision Pvt Ltd.
 \\begin{itemize}[leftmargin=1em,itemsep=0.1em]
     \\item \\textbf{Intoobox.com Migration:} Migrated a large Laravel e-commerce site to Shopify, improving performance by 40\\%.
     \\item \\textbf{E-commerce Solutions:} Developed and maintained multiple Shopify stores including KapdaTailor.com, IndySutra.com, and PowerSutra.com.
-\\enditemize}
+\\end{itemize}
 
 \\end{document}
 `;
@@ -144,18 +145,13 @@ Black Vision Pvt Ltd.
   const downloadPDF = async () => {
     try {
       setIsLoading(true);
-
       const response = await fetch('https://texlive.net/cgi-bin/latexcgi', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-        },
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         body: `formula=${encodeURIComponent(latexCode)}&return=pdf`,
       });
 
-      if (!response.ok) {
-        throw new Error('PDF generation failed');
-      }
+      if (!response.ok) throw new Error('PDF generation failed');
 
       const blob = await response.blob();
       const url = window.URL.createObjectURL(blob);
@@ -168,7 +164,7 @@ Black Vision Pvt Ltd.
       window.URL.revokeObjectURL(url);
     } catch (error) {
       console.error('Error generating PDF:', error);
-      alert('Failed to generate PDF. You can still download the LaTeX file and compile it on Overleaf.');
+      alert('Failed to generate PDF. You can still download the LaTeX file.');
     } finally {
       setIsLoading(false);
     }
@@ -183,67 +179,147 @@ Black Vision Pvt Ltd.
     element.click();
     document.body.removeChild(element);
   };
+  
+  const professionalExperience = [
+      {
+          role: "Frontend Developer",
+          company: "Messold Technologies",
+          period: "Jan 2024 - Present",
+          points: [
+              "Engineered frontend solutions for 20+ Shopify websites.",
+              "Implemented performance optimization strategies."
+          ]
+      },
+      {
+          role: "Frontend Developer",
+          company: "Black Vision Pvt Ltd.",
+          period: "Jan 2022 - Jan 2024",
+          points: [
+              "Led Shopify platform migration and optimization for key clients.",
+              "Developed custom e-commerce solutions and mentored junior developers."
+          ]
+      }
+  ];
 
   return (
-    <div className="min-h-screen bg-background py-8 px-4">
-      <div className="max-w-5xl mx-auto">
-        <Card>
-          <CardHeader>
-             <div className="flex justify-between items-start mb-4">
-                <div>
-                    <CardTitle className="text-2xl font-bold">LaTeX Resume</CardTitle>
-                    <CardDescription>A professional resume generated from LaTeX code.</CardDescription>
+    <div className="min-h-screen bg-background text-foreground">
+      <header className="sticky top-0 z-40 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+        <div className="container mx-auto flex h-16 items-center justify-between px-4">
+           <Button variant="ghost" size="icon" asChild>
+              <Link href="/">
+                <ArrowLeft />
+              </Link>
+            </Button>
+          <div className="flex items-center gap-4">
+            <Button variant="outline" onClick={() => setShowLatex(!showLatex)} size="icon" aria-label="Toggle LaTeX view">
+                <Code />
+            </Button>
+            <Button onClick={downloadPDF} disabled={isLoading}>
+              {isLoading ? <Loader2 className="animate-spin" /> : <Download />}
+              Download PDF
+            </Button>
+            <Button onClick={downloadLatex} variant="secondary">
+              <Download />
+              Download .tex
+            </Button>
+          </div>
+        </div>
+      </header>
+
+      <main className="container mx-auto max-w-4xl p-4 md:p-8">
+        {showLatex ? (
+            <div className="bg-muted/30 p-4 rounded-lg border my-8">
+                 <h2 className="text-xl font-bold mb-4">Raw LaTeX Code</h2>
+                <pre className="text-sm overflow-x-auto whitespace-pre-wrap font-code">
+                    {latexCode}
+                </pre>
+            </div>
+        ) : (
+        <div className="bg-card p-8 md:p-12 rounded-lg shadow-2xl border border-border/50 my-8">
+          {/* Header */}
+          <header className="text-center border-b border-border pb-6 mb-6">
+            <h1 className="text-4xl md:text-5xl font-bold tracking-tight">MOHAN KILARI</h1>
+            <p className="text-xl md:text-2xl text-primary mt-2">Embedded Systems & IoT Developer</p>
+          </header>
+
+          {/* Contact */}
+          <section className="text-center text-sm text-muted-foreground mb-8 grid grid-cols-2 md:grid-cols-4 gap-4">
+              <a href={`tel:${contact.phone}`} className="hover:text-accent">{contact.phone}</a>
+              <a href={`mailto:${contact.email}`} className="hover:text-accent">{contact.email}</a>
+              <a href={contact.linkedin} target="_blank" rel="noopener noreferrer" className="hover:text-accent">LinkedIn</a>
+              <a href={contact.github} target="_blank" rel="noopener noreferrer" className="hover:text-accent">GitHub</a>
+          </section>
+
+          {/* Summary */}
+          <section className="mb-8">
+            <h2 className="text-2xl font-bold border-b-2 border-primary pb-2 mb-4">Professional Summary</h2>
+            <p className="text-foreground/90 leading-relaxed">{about.trim().replace(/\n/g, ' ')}</p>
+          </section>
+
+          {/* Skills */}
+          <section className="mb-8">
+            <h2 className="text-2xl font-bold border-b-2 border-primary pb-2 mb-4">Technical Proficiencies</h2>
+            {Object.entries(skills).map(([category, skillList]) => (
+                <div key={category} className="mb-4">
+                    <h3 className="font-semibold text-lg text-accent mb-2">{category}</h3>
+                    <p className="text-foreground/90">
+                        {(skillList as {name: string}[]).map(skill => skill.name).join(', ')}.
+                    </p>
                 </div>
-                 <Button variant="ghost" size="icon" asChild>
-                    <Link href="/">
-                      <ArrowLeft />
-                    </Link>
-                </Button>
+            ))}
+          </section>
+
+          {/* Experience */}
+          <section className="mb-8">
+              <h2 className="text-2xl font-bold border-b-2 border-primary pb-2 mb-4">Professional Experience</h2>
+              {professionalExperience.map((job, index) => (
+                  <div key={index} className="mb-6">
+                      <div className="flex justify-between items-baseline">
+                          <h3 className="text-lg font-semibold">{job.role}</h3>
+                          <p className="text-sm text-muted-foreground">{job.period}</p>
+                      </div>
+                      <p className="text-md text-accent">{job.company}</p>
+                      <ul className="list-disc list-inside mt-2 text-foreground/90 space-y-1">
+                          {job.points.map((point, i) => <li key={i}>{point}</li>)}
+                      </ul>
+                  </div>
+              ))}
+          </section>
+          
+           {/* Education */}
+          <section className="mb-8">
+            <h2 className="text-2xl font-bold border-b-2 border-primary pb-2 mb-4">Academic Credentials</h2>
+            <h3 className="text-lg font-semibold">Bachelor of Technology in Electronics & Communications</h3>
+            <p className="text-md text-muted-foreground">Chaitanya Engineering College | Graduated: 2022</p>
+          </section>
+
+          {/* Projects */}
+          <section>
+            <h2 className="text-2xl font-bold border-b-2 border-primary pb-2 mb-4">Notable Projects</h2>
+            <div className="space-y-6">
+              <div>
+                  <h3 className="font-semibold text-lg text-accent mb-2">Embedded Systems</h3>
+                  <ul className="list-disc list-inside space-y-2">
+                      {projects.embedded.map((p, i) => (
+                          <li key={i}><span className="font-semibold">{p.name}:</span> {p.description} <span className="text-xs text-muted-foreground">({p.tech})</span></li>
+                      ))}
+                  </ul>
+              </div>
+              <div>
+                  <h3 className="font-semibold text-lg text-accent mb-2">Web Development</h3>
+                  <ul className="list-disc list-inside space-y-2">
+                      {projects.web.map((p, i) => (
+                          <li key={i}><span className="font-semibold">{p.name}:</span> {p.description} <span className="text-xs text-muted-foreground">({p.tech})</span></li>
+                      ))}
+                  </ul>
+              </div>
             </div>
-            <div className="flex gap-4">
-              <Button
-                onClick={downloadPDF}
-                disabled={isLoading}
-              >
-                {isLoading ? (
-                  <Loader2 size={16} className="animate-spin" />
-                ) : (
-                  <Download size={16} />
-                )}
-                Download PDF
-              </Button>
-              <Button
-                onClick={downloadLatex}
-                variant="outline"
-              >
-                <Download size={16} />
-                Download .tex
-              </Button>
-            </div>
-          </CardHeader>
-          <CardContent>
-            <div className="bg-muted/30 p-4 rounded-lg border">
-              <pre className="text-sm overflow-x-auto whitespace-pre-wrap font-code">
-                {latexCode}
-              </pre>
-            </div>
-            <div className="mt-6 text-muted-foreground">
-              <h2 className="text-lg font-semibold text-foreground mb-2">How to Use:</h2>
-              <ol className="list-decimal list-inside space-y-2 text-sm">
-                <li>Click "Download PDF" to get the compiled resume directly.</li>
-                <li>
-                  Alternatively, download the LaTeX source (`.tex`) file and compile it yourself using an online editor like{' '}
-                  <a href="https://www.overleaf.com" target="_blank" rel="noopener noreferrer" className="text-accent hover:underline">
-                    Overleaf
-                  </a> or a local LaTeX installation.
-                </li>
-              </ol>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
+          </section>
+        </div>
+        )}
+      </main>
     </div>
   );
 };
 
-export default LatexResume;
+export default LatexResumePage;
