@@ -23,7 +23,7 @@ export default function RootLayout({
       </head>
       <body className={cn('font-code antialiased min-h-screen bg-background text-foreground')}>
         <ThemeProvider
-          attribute="data-theme"
+          attribute="class"
           defaultTheme="dark"
           themes={['dark', 'matrix', 'dracula', 'solarized-dark']}
         >

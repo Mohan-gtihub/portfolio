@@ -2,12 +2,13 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import { about, skills, projects, contact, banner } from '@/lib/data';
+import { useTheme } from 'next-themes';
 
 const themes = ['dark', 'matrix', 'dracula', 'solarized-dark'];
 
 const Typewriter = ({ text, onComplete }: { text: React.ReactNode, onComplete: () => void }) => {
   const [displayedText, setDisplayedText] = useState('');
-  const textContent = typeof text === 'string' ? text : (text as React.ReactElement)?.props?.children?.toString() || '';
+  const textContent = typeof text === 'string' ? text : (text as React.ReactElement)?.props?.dangerouslySetInnerHTML?.__html || (text as React.ReactElement)?.props?.children?.toString() || '';
   const typingDelay = 5;
 
   useEffect(() => {
@@ -16,10 +17,19 @@ const Typewriter = ({ text, onComplete }: { text: React.ReactNode, onComplete: (
       return;
     }
     
+    // If it's HTML content, just show it after a delay, don't "type" it.
+    if (typeof text !== 'string') {
+       const timer = setTimeout(() => {
+        setDisplayedText(textContent);
+        onComplete();
+      }, 100); // Short delay
+      return () => clearTimeout(timer);
+    }
+
     setDisplayedText('');
     let i = 0;
     const intervalId = setInterval(() => {
-      setDisplayedText((prev) => prev + textContent.substring(0, i + 1));
+      setDisplayedText(textContent.substring(0, i + 1));
       i++;
       if (i >= textContent.length) {
         clearInterval(intervalId);
@@ -28,20 +38,10 @@ const Typewriter = ({ text, onComplete }: { text: React.ReactNode, onComplete: (
     }, typingDelay);
 
     return () => clearInterval(intervalId);
-  }, [textContent, onComplete, typingDelay]);
+  }, [text, textContent, onComplete, typingDelay]);
   
   if (typeof text !== 'string') {
-    // If the text is a React node, render it directly after a short delay to simulate 'typing'
-    const [visible, setVisible] = useState(false);
-    useEffect(() => {
-      const timer = setTimeout(() => {
-        setVisible(true);
-        onComplete();
-      }, textContent.length * typingDelay);
-      return () => clearTimeout(timer);
-    }, [textContent, onComplete, typingDelay]);
-
-    return visible ? text : <div />;
+    return <div dangerouslySetInnerHTML={{ __html: displayedText }} />;
   }
   
   return <pre className="whitespace-pre-wrap">{displayedText}</pre>;
@@ -93,8 +93,8 @@ const commands: { [key: string]: (args?: string[]) => React.ReactNode } = {
     return `--- Contact ---\n
   Email:    <a href="mailto:${contact.email}" class="text-accent hover:underline">${contact.email}</a>
   Phone:    ${contact.phone}
-  LinkedIn: <a href="${contact.linkedin}" target="_blank" rel="noopener noreferrer" class="text-accent hover:underline">${contact.linkedin}</a>
-  GitHub:   <a href="${contact.github}" target="_blank" rel="noopener noreferrer" class="text-accent hover:underline">${contact.github}</a>
+  LinkedIn: <a href="${contact.linkedin}" target="_blank" rel="noopener noreferrer" class="text-accent hover:underline">${contact.linkedin.replace('https://www.','')}</a>
+  GitHub:   <a href="${contact.github}" target="_blank" rel="noopener noreferrer" class="text-accent hover:underline">${contact.github.replace('https://','')}</a>
 `;
   },
   clear: () => {
@@ -157,8 +157,10 @@ export default function Terminal() {
           e.preventDefault();
           if (commandHistory.length > 0) {
               const newIndex = historyIndex >= 0 ? Math.max(0, historyIndex - 1) : commandHistory.length - 1;
-              setHistoryIndex(newIndex);
-              setInput(commandHistory[newIndex]);
+              if (newIndex >= 0) {
+                setHistoryIndex(newIndex);
+                setInput(commandHistory[newIndex]);
+              }
           }
       } else if (e.key === 'ArrowDown') {
           e.preventDefault();
@@ -172,11 +174,17 @@ export default function Terminal() {
                   setInput('');
               }
           }
+      } else if (e.key === 'Tab') {
+        e.preventDefault();
+        const matchingCommands = Object.keys(commands).filter(c => c.startsWith(input));
+        if (matchingCommands.length === 1) {
+            setInput(matchingCommands[0]);
+        }
       }
   };
 
   const processOutput = (output: React.ReactNode): React.ReactNode => {
-    if (typeof output === 'string') {
+    if (typeof output === 'string' && (output.includes('<a') || output.includes('<br'))) {
         return <div dangerouslySetInnerHTML={{ __html: output.replace(/\n/g, '<br />') }} />;
     }
     return output;
@@ -220,12 +228,14 @@ export default function Terminal() {
     
     const processedOutput = processOutput(output);
     setIsTyping(true);
-    setHistory(prev => [...prev, { command: input, output: <Typewriter text={processedOutput} onComplete={() => setIsTyping(false)} /> }]);
+    const newHistoryEntry = { command: input, output: <Typewriter text={processedOutput} onComplete={() => setIsTyping(false)} /> };
+
+    setHistory(prev => [...prev, newHistoryEntry]);
     setInput('');
   };
 
   return (
-    <div className="w-full max-w-4xl h-[90vh] shadow-2xl">
+    <div className="w-full max-w-4xl h-[90vh] shadow-2xl rounded-lg bg-background/80 backdrop-blur-sm border border-border/50 flex flex-col">
         <div className="bg-gray-900/80 backdrop-blur-sm rounded-t-lg p-2 flex items-center">
             <div className="flex space-x-2">
                 <div className="w-3 h-3 bg-red-500 rounded-full"></div>
@@ -237,7 +247,7 @@ export default function Terminal() {
             </div>
         </div>
         <div
-        className="w-full h-full bg-background/80 backdrop-blur-sm border-x border-b border-border/50 rounded-b-lg p-4 font-code text-sm overflow-y-auto"
+        className="flex-1 p-4 font-code text-sm overflow-y-auto"
         onClick={() => inputRef.current?.focus()}
         >
         {history.map((item, index) => (
@@ -278,19 +288,3 @@ export default function Terminal() {
     </div>
   );
 }
-
-// Dummy useTheme to avoid breaking the component without the actual provider
-// The real one will come from the layout file
-const useTheme = () => {
-    return {
-        setTheme: (theme: string) => {
-            if (typeof document !== 'undefined') {
-                document.documentElement.setAttribute('data-theme', theme);
-                // special handling for default dark theme
-                if (theme === 'dark') {
-                  document.documentElement.removeAttribute('data-theme');
-                }
-            }
-        }
-    }
-};

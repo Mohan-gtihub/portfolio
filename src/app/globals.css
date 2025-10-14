@@ -48,7 +48,7 @@
     --ring: 209 45% 54%;
   }
 
-  [data-theme='matrix'] {
+  .matrix {
     --background: 0 0% 4%;
     --foreground: 130 100% 80%;
     --primary: 130 100% 50%;
@@ -58,7 +58,7 @@
     --ring: 130 100% 60%;
   }
 
-  [data-theme='dracula'] {
+  .dracula {
     --background: 231 15% 18%;
     --foreground: 60 30% 96%;
     --primary: 265 89% 78%;
@@ -68,7 +68,7 @@
     --ring: 187 49% 62%;
   }
   
-  [data-theme='solarized-dark'] {
+  .solarized-dark {
     --background: 203 16% 15%;
     --foreground: 195 8% 78%;
     --primary: 43 100% 64%;
