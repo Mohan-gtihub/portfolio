@@ -145,13 +145,16 @@ Black Vision Pvt Ltd.
   const downloadPDF = async () => {
     try {
       setIsLoading(true);
-      const response = await fetch('https://texlive.net/cgi-bin/latexcgi', {
+      const response = await fetch('/api/generate-pdf', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: `formula=${encodeURIComponent(latexCode)}&return=pdf`,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ latexCode }),
       });
 
-      if (!response.ok) throw new Error('PDF generation failed');
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`PDF generation failed: ${errorText}`);
+      }
 
       const blob = await response.blob();
       const url = window.URL.createObjectURL(blob);
