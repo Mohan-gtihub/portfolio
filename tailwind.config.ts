@@ -10,8 +10,8 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        body: ['Fira Code', 'monospace'],
-        headline: ['Fira Code', 'monospace'],
+        body: ['Inter', 'Fira Code', 'monospace'],
+        headline: ['Inter', 'Fira Code', 'monospace'],
         code: ['Fira Code', 'monospace'],
       },
       colors: {
