@@ -11,9 +11,11 @@ const RegularPortfolio = () => {
       <Header />
       <main className="flex-grow">
         <HeroSection />
-        <SkillsSection />
-        <ProjectShowcase />
-        <ContactSection />
+        <div className="relative z-10 bg-background">
+          <SkillsSection />
+          <ProjectShowcase />
+          <ContactSection />
+        </div>
       </main>
       <Footer />
     </div>

@@ -11,7 +11,7 @@ const ProjectCard = ({ name, description, tech }: ProjectCardProps) => {
   const techStack = tech.split(',').map(t => t.trim());
 
   return (
-    <Card className="flex flex-col">
+    <Card className="flex flex-col transition-all duration-300 hover:shadow-primary/20 hover:shadow-lg hover:-translate-y-2">
       <CardHeader>
         <CardTitle>{name}</CardTitle>
         <CardDescription>{description}</CardDescription>

@@ -4,12 +4,12 @@ import { CheckCircle2 } from 'lucide-react';
 
 const SkillsSection = () => {
   return (
-    <section id="skills" className="py-20">
+    <section id="skills" className="py-20 bg-muted/20">
       <div className="container mx-auto">
         <h2 className="text-3xl font-bold text-center mb-12">Technical Skills</h2>
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
           {Object.entries(skills).map(([category, skillList]) => (
-            <Card key={category}>
+            <Card key={category} className="bg-card/80 backdrop-blur-sm">
               <CardHeader>
                 <CardTitle>{category}</CardTitle>
               </CardHeader>
