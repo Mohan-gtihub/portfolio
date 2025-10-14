@@ -153,22 +153,22 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    backface-visibility: hidden;
   }
 
   .cube__face--front {
-    transform: translateZ(150px);
+    transform: translateZ(125px);
   }
 
   .cube__face--left {
-    transform: rotateY(90deg) translateZ(150px);
-    overflow-y: hidden;
+    transform: rotateY(90deg) translateZ(125px);
   }
 
   /* These faces are not used for content but are needed for the 3D illusion */
   .cube__face--right {
-     transform: rotateY(-90deg) translateZ(150px);
+     transform: rotateY(-90deg) translateZ(125px);
   }
    .cube__face--back {
-    transform: rotateY(180deg) translateZ(150px);
+    transform: rotateY(180deg) translateZ(125px);
   }
 }
