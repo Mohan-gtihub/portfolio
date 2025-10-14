@@ -1,14 +1,14 @@
 'use client';
 
 import React, { useState, useRef, useEffect } from 'react';
-import { about, skills, projects, contact } from '@/lib/data';
+import { about, skills, projects, contact, banner } from '@/lib/data';
 
 const themes = ['dark', 'matrix', 'dracula', 'solarized-dark'];
 
 const Typewriter = ({ text, onComplete }: { text: React.ReactNode, onComplete: () => void }) => {
   const [displayedText, setDisplayedText] = useState('');
   const textContent = typeof text === 'string' ? text : (text as React.ReactElement)?.props?.children?.toString() || '';
-  const typingDelay = 10;
+  const typingDelay = 5;
 
   useEffect(() => {
     if (textContent.length === 0) {
@@ -19,9 +19,9 @@ const Typewriter = ({ text, onComplete }: { text: React.ReactNode, onComplete: (
     setDisplayedText('');
     let i = 0;
     const intervalId = setInterval(() => {
-      setDisplayedText((prev) => prev + textContent.charAt(i));
+      setDisplayedText((prev) => prev + textContent.substring(0, i + 1));
       i++;
-      if (i > textContent.length) {
+      if (i >= textContent.length) {
         clearInterval(intervalId);
         onComplete();
       }
@@ -30,15 +30,43 @@ const Typewriter = ({ text, onComplete }: { text: React.ReactNode, onComplete: (
     return () => clearInterval(intervalId);
   }, [textContent, onComplete, typingDelay]);
   
-  if (typeof text !== 'string') return text;
+  if (typeof text !== 'string') {
+    // If the text is a React node, render it directly after a short delay to simulate 'typing'
+    const [visible, setVisible] = useState(false);
+    useEffect(() => {
+      const timer = setTimeout(() => {
+        setVisible(true);
+        onComplete();
+      }, textContent.length * typingDelay);
+      return () => clearTimeout(timer);
+    }, [textContent, onComplete, typingDelay]);
+
+    return visible ? text : <div />;
+  }
   
   return <pre className="whitespace-pre-wrap">{displayedText}</pre>;
 };
 
 
-const commands = {
-  help: 'Available commands: help, about, skills, projects, contact, clear, theme, date, whoami',
-  about: about,
+const commands: { [key: string]: (args?: string[]) => React.ReactNode } = {
+  help: () => (
+    <div>
+      <p>Available commands:</p>
+      <pre className="mt-2 whitespace-pre-wrap">
+        {'help'.padEnd(15)}Show this help message
+        {'about'.padEnd(15)}Display my professional summary
+        {'skills'.padEnd(15)}List my technical skills
+        {'projects'.padEnd(15)}Showcase my projects
+        {'contact'.padEnd(15)}Display my contact information
+        {'theme'.padEnd(15)}Change the terminal theme
+        {'banner'.padEnd(15)}Display the welcome banner
+        {'date'.padEnd(15)}Show the current date
+        {'whoami'.padEnd(15)}Display current user
+        {'clear'.padEnd(15)}Clear the terminal screen
+      </pre>
+    </div>
+  ),
+  about: () => about,
   skills: () => {
     let output = '--- Skills ---\n\n';
     for (const category in skills) {
@@ -63,10 +91,10 @@ const commands = {
   },
   contact: () => {
     return `--- Contact ---\n
-  Email:    ${contact.email}
+  Email:    <a href="mailto:${contact.email}" class="text-accent hover:underline">${contact.email}</a>
   Phone:    ${contact.phone}
-  LinkedIn: ${contact.linkedin}
-  GitHub:   ${contact.github}
+  LinkedIn: <a href="${contact.linkedin}" target="_blank" rel="noopener noreferrer" class="text-accent hover:underline">${contact.linkedin}</a>
+  GitHub:   <a href="${contact.github}" target="_blank" rel="noopener noreferrer" class="text-accent hover:underline">${contact.github}</a>
 `;
   },
   clear: () => {
@@ -84,21 +112,15 @@ const commands = {
   },
   date: () => new Date().toString(),
   whoami: () => 'guest',
+  banner: () => banner,
 };
 
 const WelcomeMessage = () => (
     <>
-        <div>Welcome to Mohan Kilari's portfolio!</div>
-        <div className="h-4" />
+        <pre className="whitespace-pre-wrap font-code text-primary">{banner}</pre>
+        <div>Welcome to my interactive portfolio.</div>
+        <div className="h-2" />
         <div>Type 'help' to see a list of available commands.</div>
-        <pre className="mt-4 whitespace-pre-wrap font-code text-primary">
-{` _ __ ___   ___  _ __   __ _  ___| |__  
-| '_ \` _ \\ / _ \\| '_ \\ / _\` |/ __| '_ \\ 
-| | | | | | (_) | | | | (_| | (__| | | |
-|_| |_| |_|\\___/|_| |_|\\__,_|\\___|_| |_|
-                                      
-`}
-        </pre>
     </>
 );
 
@@ -153,6 +175,13 @@ export default function Terminal() {
       }
   };
 
+  const processOutput = (output: React.ReactNode): React.ReactNode => {
+    if (typeof output === 'string') {
+        return <div dangerouslySetInnerHTML={{ __html: output.replace(/\n/g, '<br />') }} />;
+    }
+    return output;
+  };
+
   const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (isTyping) return;
@@ -167,6 +196,8 @@ export default function Terminal() {
 
       if (result === 'clear') {
           setHistory([]);
+          setInput('');
+          return;
       } else if (typeof result === 'string' && result.startsWith('theme:')) {
           const newTheme = result.split(':')[1];
           setTheme(newTheme);
@@ -187,50 +218,63 @@ export default function Terminal() {
     }
     setHistoryIndex(-1);
     
+    const processedOutput = processOutput(output);
     setIsTyping(true);
-    setHistory(prev => [...prev, { command: input, output: <Typewriter text={output} onComplete={() => setIsTyping(false)} /> }]);
+    setHistory(prev => [...prev, { command: input, output: <Typewriter text={processedOutput} onComplete={() => setIsTyping(false)} /> }]);
     setInput('');
   };
 
   return (
-    <div
-      className="w-full h-[85vh] bg-background border border-border rounded-lg p-4 font-code text-sm overflow-y-auto"
-      onClick={() => inputRef.current?.focus()}
-    >
-      {history.map((item, index) => (
-        <div key={index}>
-          {item.command && (
-            <div className="flex items-center">
-              <span className="text-primary">user@kilari.dev:~$</span>
-              <span className="ml-2">{item.command}</span>
+    <div className="w-full max-w-4xl h-[90vh] shadow-2xl">
+        <div className="bg-gray-900/80 backdrop-blur-sm rounded-t-lg p-2 flex items-center">
+            <div className="flex space-x-2">
+                <div className="w-3 h-3 bg-red-500 rounded-full"></div>
+                <div className="w-3 h-3 bg-yellow-500 rounded-full"></div>
+                <div className="w-3 h-3 bg-green-500 rounded-full"></div>
             </div>
-          )}
-          <div className="text-foreground/90">{item.output}</div>
+            <div className="flex-1 text-center text-sm text-gray-400 font-code">
+                Mohan Kilari - Portfolio
+            </div>
         </div>
-      ))}
+        <div
+        className="w-full h-full bg-background/80 backdrop-blur-sm border-x border-b border-border/50 rounded-b-lg p-4 font-code text-sm overflow-y-auto"
+        onClick={() => inputRef.current?.focus()}
+        >
+        {history.map((item, index) => (
+            <div key={index}>
+            {item.command && (
+                <div className="flex items-center">
+                <span className="text-primary">user@kilari.dev:~$</span>
+                <span className="ml-2">{item.command}</span>
+                </div>
+            )}
+            <div className="text-foreground/90">{item.output}</div>
+            </div>
+        ))}
 
-      {!isTyping && (
-          <form onSubmit={handleFormSubmit} className="flex items-center">
-            <label htmlFor="terminal-input" className="text-primary">
-              user@kilari.dev:~$
-            </label>
-            <input
-              ref={inputRef}
-              id="terminal-input"
-              type="text"
-              value={input}
-              onChange={handleInputChange}
-              onKeyDown={handleKeyDown}
-              className="flex-1 bg-transparent border-none text-foreground focus:outline-none ml-2"
-              autoComplete="off"
-              autoCapitalize="none"
-              autoCorrect="off"
-              disabled={isTyping}
-            />
-             <span className="w-2 h-4 bg-foreground cursor-blink" />
-          </form>
-      )}
-      <div ref={endOfHistoryRef} />
+        {!isTyping && (
+            <form onSubmit={handleFormSubmit} className="flex items-center">
+                <label htmlFor="terminal-input" className="text-primary">
+                user@kilari.dev:~$
+                </label>
+                <input
+                ref={inputRef}
+                id="terminal-input"
+                type="text"
+                value={input}
+                onChange={handleInputChange}
+                onKeyDown={handleKeyDown}
+                className="flex-1 bg-transparent border-none text-foreground focus:outline-none ml-2"
+                autoComplete="off"
+                autoCapitalize="none"
+                autoCorrect="off"
+                disabled={isTyping}
+                />
+                <span className="w-2 h-4 bg-foreground cursor-blink" />
+            </form>
+        )}
+        <div ref={endOfHistoryRef} />
+        </div>
     </div>
   );
 }
@@ -242,6 +286,10 @@ const useTheme = () => {
         setTheme: (theme: string) => {
             if (typeof document !== 'undefined') {
                 document.documentElement.setAttribute('data-theme', theme);
+                // special handling for default dark theme
+                if (theme === 'dark') {
+                  document.documentElement.removeAttribute('data-theme');
+                }
             }
         }
     }
