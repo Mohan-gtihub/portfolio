@@ -20,7 +20,7 @@ const HeroSection = () => {
             </a>
           </Button>
           <Button variant="outline" asChild>
-            <a href="/resume.pdf" target="_blank" rel="noopener noreferrer">
+            <a href="/resume">
               View Resume <FileText className="ml-2" />
             </a>
           </Button>
