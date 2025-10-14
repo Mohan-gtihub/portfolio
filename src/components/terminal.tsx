@@ -7,8 +7,21 @@ import { useTheme } from 'next-themes';
 const themes = ['dark', 'matrix', 'dracula', 'solarized-dark'];
 
 const Typewriter = ({ text, onComplete }: { text: React.ReactNode, onComplete: () => void }) => {
-  const [displayedText, setDisplayedText] = useState('');
-  const textContent = typeof text === 'string' ? text : (text as React.ReactElement)?.props?.dangerouslySetInnerHTML?.__html || (text as React.ReactElement)?.props?.children?.toString() || '';
+  const [displayedText, setDisplayedText] = useState<string>('');
+  
+  const getTextContent = (node: React.ReactNode): string => {
+    if (typeof node === 'string') return node;
+    if (Array.isArray(node)) return node.map(getTextContent).join('');
+    if (React.isValidElement(node) && node.props.children) {
+      return React.Children.map(node.props.children, getTextContent).join('');
+    }
+    if (React.isValidElement(node) && node.props.dangerouslySetInnerHTML) {
+      return node.props.dangerouslySetInnerHTML.__html;
+    }
+    return '';
+  };
+
+  const textContent = getTextContent(text);
   const typingDelay = 5;
 
   useEffect(() => {
@@ -17,19 +30,18 @@ const Typewriter = ({ text, onComplete }: { text: React.ReactNode, onComplete: (
       return;
     }
     
-    // If it's HTML content, just show it after a delay, don't "type" it.
     if (typeof text !== 'string') {
        const timer = setTimeout(() => {
         setDisplayedText(textContent);
         onComplete();
-      }, 100); // Short delay
+      }, 100);
       return () => clearTimeout(timer);
     }
 
     setDisplayedText('');
     let i = 0;
     const intervalId = setInterval(() => {
-      setDisplayedText(textContent.substring(0, i + 1));
+      setDisplayedText((prev) => prev + textContent[i]);
       i++;
       if (i >= textContent.length) {
         clearInterval(intervalId);
@@ -50,21 +62,19 @@ const Typewriter = ({ text, onComplete }: { text: React.ReactNode, onComplete: (
 
 const commands: { [key: string]: (args?: string[]) => React.ReactNode } = {
   help: () => (
-    <div>
-      <p>Available commands:</p>
-      <pre className="mt-2 whitespace-pre-wrap">
-        {'help'.padEnd(15)}Show this help message
-        {'about'.padEnd(15)}Display my professional summary
-        {'skills'.padEnd(15)}List my technical skills
-        {'projects'.padEnd(15)}Showcase my projects
-        {'contact'.padEnd(15)}Display my contact information
-        {'theme'.padEnd(15)}Change the terminal theme
-        {'banner'.padEnd(15)}Display the welcome banner
-        {'date'.padEnd(15)}Show the current date
-        {'whoami'.padEnd(15)}Display current user
-        {'clear'.padEnd(15)}Clear the terminal screen
-      </pre>
-    </div>
+    <pre className="whitespace-pre-wrap">
+      {'Available commands:\n\n'}
+      {'help'.padEnd(15)}Show this help message{'\n'}
+      {'about'.padEnd(15)}Display my professional summary{'\n'}
+      {'skills'.padEnd(15)}List my technical skills{'\n'}
+      {'projects'.padEnd(15)}Showcase my projects{'\n'}
+      {'contact'.padEnd(15)}Display my contact information{'\n'}
+      {'theme'.padEnd(15)}Change the terminal theme{'\n'}
+      {'banner'.padEnd(15)}Display the welcome banner{'\n'}
+      {'date'.padEnd(15)}Show the current date{'\n'}
+      {'whoami'.padEnd(15)}Display current user{'\n'}
+      {'clear'.padEnd(15)}Clear the terminal screen
+    </pre>
   ),
   about: () => about,
   skills: () => {
@@ -187,6 +197,9 @@ export default function Terminal() {
     if (typeof output === 'string' && (output.includes('<a') || output.includes('<br'))) {
         return <div dangerouslySetInnerHTML={{ __html: output.replace(/\n/g, '<br />') }} />;
     }
+     if (typeof output === 'string') {
+      return <pre className="whitespace-pre-wrap">{output}</pre>;
+    }
     return output;
   };
 
@@ -227,10 +240,19 @@ export default function Terminal() {
     setHistoryIndex(-1);
     
     const processedOutput = processOutput(output);
-    setIsTyping(true);
-    const newHistoryEntry = { command: input, output: <Typewriter text={processedOutput} onComplete={() => setIsTyping(false)} /> };
+    
+    const newHistoryEntry = { 
+        command: input, 
+        output: <Typewriter text={processedOutput} onComplete={() => setIsTyping(false)} /> 
+    };
 
-    setHistory(prev => [...prev, newHistoryEntry]);
+    if (output) {
+        setIsTyping(true);
+        setHistory(prev => [...prev, { command: input, output: <Typewriter text={processedOutput} onComplete={() => setIsTyping(false)} /> }]);
+    } else {
+        setHistory(prev => [...prev, { command: input, output: '' }]);
+    }
+
     setInput('');
   };
 
