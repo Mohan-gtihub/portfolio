@@ -168,6 +168,6 @@
   }
   .cube__face--left {
     transform: rotateY(-90deg) translateZ(150px);
-    overflow-y: auto;
+    overflow-y: hidden; /* hide overflow by default */
   }
 }

@@ -13,11 +13,6 @@ interface SkillCubeProps {
 }
 
 const SkillCube = ({ category, skills }: SkillCubeProps) => {
-  // We'll split skills for different faces of the cube
-  const half = Math.ceil(skills.length / 2);
-  const firstHalf = skills.slice(0, half);
-  const secondHalf = skills.slice(half);
-
   return (
     <div className="scene w-full h-[250px]">
       <div className="cube">
@@ -25,8 +20,8 @@ const SkillCube = ({ category, skills }: SkillCubeProps) => {
           <h3 className="text-2xl font-bold text-primary">{category}</h3>
           <p className="mt-4 text-muted-foreground">Hover to see skills</p>
         </div>
-        <div className="cube__face cube__face--left items-start overflow-y-auto p-6">
-          <ul className="space-y-4">
+        <div className="cube__face cube__face--left items-start p-6">
+          <ul className="space-y-4 h-full overflow-y-auto">
             {skills.map((skill, index) => (
                <li key={index} className="flex gap-3">
                  <CheckCircle2 className="text-primary mt-1 h-5 w-5 flex-shrink-0" />
