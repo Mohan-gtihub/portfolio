@@ -124,3 +124,49 @@
     }
   }
 }
+
+@layer components {
+  .project-card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: var(--radius);
+    padding: 2px;
+    background: linear-gradient(45deg, hsl(var(--primary) / 0.2), hsl(var(--accent) / 0.2));
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    transition: all 0.3s ease;
+    opacity: 0;
+  }
+  .project-card:hover::before {
+    opacity: 1;
+    box-shadow: 0 0 20px hsl(var(--primary) / 0.5);
+  }
+
+  .project-card-grid {
+    position: absolute;
+    inset: 0;
+    border-radius: var(--radius);
+    background-image:
+      linear-gradient(hsl(var(--border) / 0.5) 1px, transparent 1px),
+      linear-gradient(to right, hsl(var(--border) / 0.5) 1px, transparent 1px);
+    background-size: 30px 30px;
+    animation: pan-grid 15s linear infinite;
+    opacity: 0.2;
+    transition: opacity 0.3s ease;
+  }
+
+  .project-card:hover .project-card-grid {
+    opacity: 0.4;
+  }
+
+  @keyframes pan-grid {
+    0% {
+      background-position: 0 0;
+    }
+    100% {
+      background-position: 30px 30px;
+    }
+  }
+}

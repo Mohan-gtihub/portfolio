@@ -1,3 +1,4 @@
+
 import { projects } from '@/lib/data';
 import ProjectCard from './project-card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs';
@@ -15,14 +16,14 @@ const ProjectShowcase = () => {
           <TabsContent value="embedded">
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mt-8">
               {projects.embedded.map((project, index) => (
-                <ProjectCard key={index} {...project} imageSeed={`embed${index}`} />
+                <ProjectCard key={index} {...project} animationSeed={index * 0.2} />
               ))}
             </div>
           </TabsContent>
           <TabsContent value="web">
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mt-8">
               {projects.web.map((project, index) => (
-                <ProjectCard key={index} {...project} imageSeed={`web${index}`} />
+                <ProjectCard key={index} {...project} animationSeed={(projects.embedded.length + index) * 0.2} />
               ))}
             </div>
           </TabsContent>
