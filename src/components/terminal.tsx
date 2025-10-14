@@ -4,64 +4,9 @@ import React, { useState, useRef, useEffect } from 'react';
 import { about, skills, projects, contact, banner } from '@/lib/data';
 import { useTheme } from 'next-themes';
 
-const themes = ['dark', 'matrix', 'dracula', 'solarized-dark'];
+const themes = ['dark', 'matrix', 'dracula', 'solarized-dark', 'ironman'];
 
 const Typewriter = ({ text, onComplete }: { text: React.ReactNode, onComplete: () => void }) => {
-  const [displayedText, setDisplayedText] = useState('');
-  
-  useEffect(() => {
-    // If the text is not a simple string, we can't "type" it out character by character easily.
-    // So we'll convert it to a string representation for the typewriter.
-    const textAsString = reactNodeToString(text);
-    
-    let i = 0;
-    const type = () => {
-      if (i < textAsString.length) {
-        setDisplayedText(prev => prev + textAsString.charAt(i));
-        i++;
-        requestAnimationFrame(type);
-      } else {
-        onComplete();
-      }
-    };
-
-    const animationFrameId = requestAnimationFrame(type);
-
-    return () => cancelAnimationFrame(animationFrameId);
-  }, [text, onComplete]);
-
-  // A helper to convert simple JSX to a string. This is a simplification.
-  const reactNodeToString = (node: React.ReactNode): string => {
-    if (typeof node === 'string') return node;
-    if (typeof node === 'number') return String(node);
-    if (node === null || typeof node === 'undefined') return '';
-    if (Array.isArray(node)) return node.map(reactNodeToString).join('');
-    if (React.isValidElement(node)) {
-        // This is a simplified way to handle this. For complex components, it might not be perfect.
-        const children = React.Children.toArray(node.props.children);
-        return reactNodeToString(children);
-    }
-    return '';
-  };
-
-  // The actual output needs to be the original ReactNode to preserve formatting and links.
-  // The typewriter effect is just a visual layer on top.
-  if (typeof text !== 'string') {
-      // For complex nodes, we can't do a simple substring. 
-      // This is a tricky problem. For now, let's just show the full output after a short delay
-      // to simulate "typing". A real solution is much more complex.
-      // A better way is to render the full node but reveal it over time.
-      // The current implementation is causing issues. Let's simplify.
-      
-      // Let's go back to a simpler model. If it's a string, type it. If not, just display it.
-      if(typeof text === 'string') {
-          return <pre className="whitespace-pre-wrap">{displayedText}</pre>;
-      }
-  }
-  
-  // Let's try a different approach. We just display the content.
-  // The typewriter is causing too many issues with complex React nodes.
-  // Let's remove the typewriter for now to ensure stability.
   useEffect(() => {
     onComplete();
   }, [onComplete]);

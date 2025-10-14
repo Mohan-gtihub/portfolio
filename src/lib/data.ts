@@ -57,7 +57,7 @@ export const contact = {
     email: "kilarimohansai@gmail.com",
     phone: "+91 8121988257",
     linkedin: "https://www.linkedin.com/in/mohan-kilari",
-    github: "https://github.com/Mohan-Kilari",
+    github: "https://github.com/Mohan-gtihub/",
 };
 
 export const banner = `
@@ -68,4 +68,3 @@ export const banner = `
 ██║ ╚═╝ ██║╚██████╔╝██║  ██║ ██║  ██║██║ ╚████║
 ╚═╝     ╚═╝ ╚═════╝ ╚═╝  ╚═╝ ╚═╝  ╚═╝╚═╝  ╚═══╝ 
 `;
-
