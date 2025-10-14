@@ -33,8 +33,6 @@ const SkillCube = ({ category, skills }: SkillCubeProps) => {
             ))}
           </ul>
         </div>
-        {/* The right face is what is seen during transition from front to left */}
-        <div className="cube__face cube__face--right" />
       </div>
     </div>
   );

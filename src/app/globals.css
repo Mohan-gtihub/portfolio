@@ -149,8 +149,6 @@
     background-color: hsla(var(--card), 0.8);
     border: 1px solid hsl(var(--border));
     border-radius: var(--radius);
-    -webkit-backface-visibility: hidden; /* Safari */
-    backface-visibility: hidden;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -158,16 +156,19 @@
   }
 
   .cube__face--front {
-    transform: rotateY(0deg) translateZ(150px);
+    transform: translateZ(150px);
   }
-  .cube__face--right {
-    transform: rotateY(90deg) translateZ(150px);
-  }
-  .cube__face--back {
-    transform: rotateY(180deg) translateZ(150px);
-  }
+
   .cube__face--left {
-    transform: rotateY(-90deg) translateZ(150px);
-    overflow-y: hidden; /* hide overflow by default */
+    transform: rotateY(90deg) translateZ(150px);
+    overflow-y: hidden;
+  }
+
+  /* These faces are not used for content but are needed for the 3D illusion */
+  .cube__face--right {
+     transform: rotateY(-90deg) translateZ(150px);
+  }
+   .cube__face--back {
+    transform: rotateY(180deg) translateZ(150px);
   }
 }
