@@ -11,37 +11,33 @@ const Typewriter = ({ text, onComplete }: { text: React.ReactNode, onComplete: (
   
   const getTextContent = (node: React.ReactNode): string => {
     if (typeof node === 'string') return node;
+    if (typeof node === 'number') return String(node);
     if (Array.isArray(node)) return node.map(getTextContent).join('');
     if (React.isValidElement(node) && node.props.children) {
-      return React.Children.map(node.props.children, getTextContent).join('');
-    }
-    if (React.isValidElement(node) && node.props.dangerouslySetInnerHTML) {
-      return node.props.dangerouslySetInnerHTML.__html;
+      return React.Children.toArray(node.props.children).map(getTextContent).join('');
     }
     return '';
   };
-
-  const textContent = getTextContent(text);
+  
+  const textContent = typeof text === 'string' ? text : getTextContent(text);
+  const isComplex = typeof text !== 'string';
   const typingDelay = 5;
 
   useEffect(() => {
-    if (textContent.length === 0) {
+    if (isComplex) {
+      // For complex elements (like with HTML), show immediately.
+      if (React.isValidElement(text)) {
+         setDisplayedText((text.props.dangerouslySetInnerHTML?.__html || ''));
+      }
       onComplete();
       return;
     }
-    
-    if (typeof text !== 'string') {
-       const timer = setTimeout(() => {
-        setDisplayedText(textContent);
-        onComplete();
-      }, 100);
-      return () => clearTimeout(timer);
-    }
 
+    // For simple strings, use typewriter effect.
     setDisplayedText('');
     let i = 0;
     const intervalId = setInterval(() => {
-      setDisplayedText((prev) => prev + textContent[i]);
+      setDisplayedText((prev) => prev + textContent.charAt(i));
       i++;
       if (i >= textContent.length) {
         clearInterval(intervalId);
@@ -50,9 +46,9 @@ const Typewriter = ({ text, onComplete }: { text: React.ReactNode, onComplete: (
     }, typingDelay);
 
     return () => clearInterval(intervalId);
-  }, [text, textContent, onComplete, typingDelay]);
+  }, [text, textContent, onComplete, isComplex]);
   
-  if (typeof text !== 'string') {
+  if (isComplex) {
     return <div dangerouslySetInnerHTML={{ __html: displayedText }} />;
   }
   
@@ -194,7 +190,7 @@ export default function Terminal() {
   };
 
   const processOutput = (output: React.ReactNode): React.ReactNode => {
-    if (typeof output === 'string' && (output.includes('<a') || output.includes('<br'))) {
+    if (typeof output === 'string' && output.includes('<a')) {
         return <div dangerouslySetInnerHTML={{ __html: output.replace(/\n/g, '<br />') }} />;
     }
      if (typeof output === 'string') {
