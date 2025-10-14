@@ -56,7 +56,7 @@ export const projects = {
 export const contact = {
     email: "kilarimohansai@gmail.com",
     phone: "+91 8121988257",
-    linkedin: "https://www.linkedin.com/in/mohan-kilari",
+    linkedin: "https://www.linkedin.com/in/mohan-kilari-207a131a2/",
     github: "https://github.com/Mohan-gtihub/",
 };
 
