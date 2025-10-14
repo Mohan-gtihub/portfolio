@@ -6,52 +6,69 @@ import { useTheme } from 'next-themes';
 
 const themes = ['dark', 'matrix', 'dracula', 'solarized-dark'];
 
-const Typewriter = ({ text, onComplete }: { text: React.ReactNode, onComplete: () => void }) => {
-  const [displayedText, setDisplayedText] = useState<string>('');
-  
-  const getTextContent = (node: React.ReactNode): string => {
-    if (typeof node === 'string') return node;
-    if (typeof node === 'number') return String(node);
-    if (Array.isArray(node)) return node.map(getTextContent).join('');
-    if (React.isValidElement(node) && node.props.children) {
-      return React.Children.toArray(node.props.children).map(getTextContent).join('');
-    }
-    return '';
-  };
-  
-  const textContent = typeof text === 'string' ? text : getTextContent(text);
-  const isComplex = typeof text !== 'string';
-  const typingDelay = 5;
+const Typewriter = ({ text, onComplete }: { text: string | React.ReactNode, onComplete: () => void }) => {
+  const [displayedText, setDisplayedText] = useState('');
+  const contentRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (isComplex) {
-      // For complex elements (like with HTML), show immediately.
-      if (React.isValidElement(text)) {
-         setDisplayedText((text.props.dangerouslySetInnerHTML?.__html || ''));
-      }
-      onComplete();
-      return;
-    }
+    let animationFrameId: number;
 
-    // For simple strings, use typewriter effect.
-    setDisplayedText('');
+    // If text is a complex React node, render it and then "type" it out.
+    if (typeof text !== 'string') {
+        // This is a simplified approach: we render the complex content at once.
+        // A true typewriter for complex HTML is much more involved.
+        if (contentRef.current) {
+            // Since we can't easily "type" JSX, we'll just display it.
+            // A more complex implementation could traverse the tree.
+            const container = document.createElement('div');
+            // This is a hacky way to get the string content.
+            // In a real app, you might use react-dom/server.
+            container.innerHTML = getHTMLFromReactNode(text);
+            setDisplayedText(container.innerHTML);
+        }
+        onComplete();
+        return;
+    }
+    
+    // For simple strings, use the typewriter effect
     let i = 0;
-    const intervalId = setInterval(() => {
-      setDisplayedText((prev) => prev + textContent.charAt(i));
-      i++;
-      if (i >= textContent.length) {
-        clearInterval(intervalId);
+    const type = () => {
+      if (i < text.length) {
+        setDisplayedText(prev => prev + text.charAt(i));
+        i++;
+        animationFrameId = requestAnimationFrame(type);
+      } else {
         onComplete();
       }
-    }, typingDelay);
+    };
 
-    return () => clearInterval(intervalId);
-  }, [text, textContent, onComplete, isComplex]);
-  
-  if (isComplex) {
-    return <div dangerouslySetInnerHTML={{ __html: displayedText }} />;
+    animationFrameId = requestAnimationFrame(type);
+
+    return () => cancelAnimationFrame(animationFrameId);
+  }, [text, onComplete]);
+
+  // Helper to convert simple JSX to string for typewriter
+  const getHTMLFromReactNode = (node: React.ReactNode): string => {
+    if (typeof node === 'string') return node;
+    if (typeof node === 'number') return String(node);
+    if (!React.isValidElement(node)) return '';
+    
+    const children = React.Children.toArray(node.props.children).map(getHTMLFromReactNode).join('');
+
+    if(node.type === 'pre') {
+        return `<pre class="whitespace-pre-wrap">${children}</pre>`
+    }
+    if (node.props.dangerouslySetInnerHTML) {
+        return node.props.dangerouslySetInnerHTML.__html;
+    }
+
+    return children;
+  };
+
+  if (typeof text !== 'string') {
+     return <div dangerouslySetInnerHTML={{ __html: getHTMLFromReactNode(text) }} />;
   }
-  
+
   return <pre className="whitespace-pre-wrap">{displayedText}</pre>;
 };
 
@@ -237,20 +254,53 @@ export default function Terminal() {
     
     const processedOutput = processOutput(output);
     
-    const newHistoryEntry = { 
-        command: input, 
-        output: <Typewriter text={processedOutput} onComplete={() => setIsTyping(false)} /> 
-    };
+    const onComplete = () => setIsTyping(false);
+
+    let outputComponent;
+    if (typeof processedOutput === 'string') {
+        outputComponent = <Typewriter text={processedOutput} onComplete={onComplete} />;
+    } else if (React.isValidElement(processedOutput)) {
+        outputComponent = processedOutput;
+        // Since we can't easily "type" a complex component, we just display it.
+        // We'll call onComplete immediately for now. A better typewriter would handle this.
+        // This is a simplification to fix the immediate bug.
+        // For a true typing effect on complex nodes, a more advanced component would be needed.
+        if (isTyping) {
+            // This is a workaround to make the prompt reappear
+            setTimeout(() => onComplete(), 0);
+        }
+    } else {
+        outputComponent = String(processedOutput);
+    }
 
     if (output) {
+        // A simplification: Let's not use the typewriter for complex elements for now to ensure it works.
+        const outputToRender = (typeof processedOutput === 'string' || React.isValidElement(processedOutput)) ? processedOutput : String(processedOutput);
+        
         setIsTyping(true);
-        setHistory(prev => [...prev, { command: input, output: <Typewriter text={processedOutput} onComplete={() => setIsTyping(false)} /> }]);
+        setHistory(prev => [...prev, { command: input, output: <Typewriter text={outputToRender} onComplete={() => setIsTyping(false)} /> }]);
     } else {
         setHistory(prev => [...prev, { command: input, output: '' }]);
     }
+    
+    setHistory(prev => {
+        const newEntry = { command: input, output: output ? processOutput(output) : '' };
+        return [...prev, newEntry];
+    });
+
 
     setInput('');
   };
+  
+  const FinalOutput = ({content}: {content: React.ReactNode}) => {
+      if (typeof content === 'string') {
+          if (content.includes('<a')) {
+               return <div dangerouslySetInnerHTML={{ __html: content.replace(/\n/g, '<br />') }} />;
+          }
+          return <pre className="whitespace-pre-wrap">{content}</pre>
+      }
+      return <>{content}</>;
+  }
 
   return (
     <div className="w-full max-w-4xl h-[90vh] shadow-2xl rounded-lg bg-background/80 backdrop-blur-sm border border-border/50 flex flex-col">
@@ -276,31 +326,30 @@ export default function Terminal() {
                 <span className="ml-2">{item.command}</span>
                 </div>
             )}
-            <div className="text-foreground/90">{item.output}</div>
+            <div className="text-foreground/90"><FinalOutput content={item.output} /></div>
             </div>
         ))}
 
-        {!isTyping && (
-            <form onSubmit={handleFormSubmit} className="flex items-center">
-                <label htmlFor="terminal-input" className="text-primary">
-                user@kilari.dev:~$
-                </label>
-                <input
-                ref={inputRef}
-                id="terminal-input"
-                type="text"
-                value={input}
-                onChange={handleInputChange}
-                onKeyDown={handleKeyDown}
-                className="flex-1 bg-transparent border-none text-foreground focus:outline-none ml-2"
-                autoComplete="off"
-                autoCapitalize="none"
-                autoCorrect="off"
-                disabled={isTyping}
-                />
-                <span className="w-2 h-4 bg-foreground cursor-blink" />
-            </form>
-        )}
+        
+        <form onSubmit={handleFormSubmit} className="flex items-center">
+            <label htmlFor="terminal-input" className="text-primary">
+            user@kilari.dev:~$
+            </label>
+            <input
+            ref={inputRef}
+            id="terminal-input"
+            type="text"
+            value={input}
+            onChange={handleInputChange}
+            onKeyDown={handleKeyDown}
+            className="flex-1 bg-transparent border-none text-foreground focus:outline-none ml-2"
+            autoComplete="off"
+            autoCapitalize="none"
+            autoCorrect="off"
+            />
+            <span className="w-2 h-4 bg-foreground cursor-blink" />
+        </form>
+        
         <div ref={endOfHistoryRef} />
         </div>
     </div>
