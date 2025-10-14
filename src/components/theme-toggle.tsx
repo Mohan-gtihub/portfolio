@@ -25,14 +25,20 @@ export function ThemeToggle() {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
-        <DropdownMenuItem onClick={() => setTheme("light")}>
-          Light
-        </DropdownMenuItem>
         <DropdownMenuItem onClick={() => setTheme("dark")}>
           Dark
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => setTheme("system")}>
-          System
+        <DropdownMenuItem onClick={() => setTheme("matrix")}>
+          Matrix
+        </DropdownMenuItem>
+        <DropdownMenuItem onClick={() => setTheme("dracula")}>
+          Dracula
+        </DropdownMenuItem>
+        <DropdownMenuItem onClick={() => setTheme("solarized-dark")}>
+          Solarized Dark
+        </DropdownMenuItem>
+        <DropdownMenuItem onClick={() => setTheme("ironman")}>
+          Iron Man
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

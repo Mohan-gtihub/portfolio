@@ -77,6 +77,28 @@
     --input: 195 10% 30%;
     --ring: 200 100% 50%;
   }
+
+  .ironman {
+    --background: 10 10% 10%; /* Very dark grey, slightly warm */
+    --foreground: 0 0% 98%;
+    --card: 10 10% 15%;
+    --card-foreground: 0 0% 98%;
+    --popover: 10 10% 10%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 0 72% 51%; /* Iron Man Red */
+    --primary-foreground: 0 0% 98%;
+    --secondary: 0 0% 20%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 0 0% 20%;
+    --muted-foreground: 0 0% 60%;
+    --accent: 45 100% 51%; /* Gold/Yellow */
+    --accent-foreground: 10 10% 10%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 0 0% 25%;
+    --input: 0 0% 25%;
+    --ring: 199 89% 48%; /* Arc Reactor Blue */
+  }
 }
  
 @layer base {

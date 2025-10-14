@@ -27,7 +27,7 @@ export default function RootLayout({
           <ThemeProvider
             attribute="class"
             defaultTheme="dark"
-            themes={['dark', 'matrix', 'dracula', 'solarized-dark']}
+            themes={['dark', 'matrix', 'dracula', 'solarized-dark', 'ironman']}
           >
             {children}
             <Toaster />
